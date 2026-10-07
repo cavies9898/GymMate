@@ -18,43 +18,30 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gymmate.app.R
 import com.gymmate.app.domain.model.DifficultyLevel
 import com.gymmate.app.domain.model.Exercise
-import com.gymmate.app.presentation.routines.detail.components.getExerciseIcon
+import com.gymmate.app.presentation.ui.color
+import com.gymmate.app.presentation.ui.icon
 
 @Composable
 fun ExerciseCard(
     exercise: Exercise,
     onClick: () -> Unit
 ) {
-    val difficultyColor = when (exercise.difficulty) {
-        DifficultyLevel.BEGINNER -> Color(0xFF4CAF50)
-        DifficultyLevel.INTERMEDIATE -> Color(0xFFFF9800)
-        DifficultyLevel.ADVANCED -> Color(0xFFE53935)
-    }
+    val difficultyColor = exercise.difficulty.color()
     val difficultyLabel = when (exercise.difficulty) {
-        DifficultyLevel.BEGINNER -> "Principiante"
-        DifficultyLevel.INTERMEDIATE -> "Intermedio"
-        DifficultyLevel.ADVANCED -> "Avanzado"
+        DifficultyLevel.BEGINNER -> stringResource(R.string.difficulty_beginner)
+        DifficultyLevel.INTERMEDIATE -> stringResource(R.string.difficulty_intermediate)
+        DifficultyLevel.ADVANCED -> stringResource(R.string.difficulty_advanced)
     }
-    val muscleLabel = when (exercise.muscleGroup.name) {
-        "CHEST" -> "Pecho"
-        "BACK" -> "Espalda"
-        "SHOULDERS" -> "Hombros"
-        "BICEPS" -> "Bíceps"
-        "TRICEPS" -> "Tríceps"
-        "CORE" -> "Core"
-        "GLUTES" -> "Glúteos"
-        "LEGS" -> "Piernas"
-        "FULL_BODY" -> "Cuerpo completo"
-        "CARDIO" -> "Cardio"
-        else -> exercise.muscleGroup.name
-    }
+    val muscleLabel = exercise.muscleGroup.icon()
+    val muscleIcon = exercise.muscleGroup.icon()
 
     Card(
         onClick = onClick,
@@ -80,7 +67,7 @@ fun ExerciseCard(
                 contentAlignment = Alignment.Center
             ) {
                 Text(
-                    text = getExerciseIcon(exercise.muscleGroup.name),
+                    text = muscleIcon,
                     fontSize = 26.sp
                 )
             }
@@ -113,17 +100,17 @@ fun ExerciseCard(
 
             Spacer(modifier = Modifier.width(8.dp))
 
-            // Badge dificultad
+            // Badge dificultad - usa el color de dificultad como fondo con texto blanco
             Box(
                 modifier = Modifier
                     .clip(RoundedCornerShape(8.dp))
-                    .background(difficultyColor.copy(alpha = 0.15f))
+                    .background(difficultyColor)
                     .padding(horizontal = 8.dp, vertical = 4.dp)
             ) {
                 Text(
                     text = difficultyLabel,
                     style = MaterialTheme.typography.labelSmall,
-                    color = difficultyColor,
+                    color = androidx.compose.ui.graphics.Color.White,
                     fontWeight = FontWeight.Bold
                 )
             }

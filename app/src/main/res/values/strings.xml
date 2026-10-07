@@ -1,3 +1,184 @@
 <resources>
     <string name="app_name">GymMate</string>
+
+    <!-- General -->
+    <string name="loading">Cargando…</string>
+    <string name="error_generic">Ha ocurrido un error</string>
+    <string name="retry">Reintentar</string>
+    <string name="cancel">Cancelar</string>
+    <string name="save">Guardar</string>
+    <string name="edit">Editar</string>
+    <string name="delete">Eliminar</string>
+    <string name="confirm">Confirmar</string>
+    <string name="close">Cerrar</string>
+    <string name="back">Volver</string>
+    <string name="next">Siguiente</string>
+    <string name="skip">Saltar</string>
+    <string name="done">Listo</string>
+    <string name="search">Buscar</string>
+    <string name="clear">Limpiar</string>
+    <string name="all">Todos</string>
+    <string name="none">Ninguno</string>
+    <string name="not_defined">No definido</string>
+
+    <!-- Navigation / Destinations -->
+    <string name="nav_home">Inicio</string>
+    <string name="nav_routines">Rutinas</string>
+    <string name="nav_exercises">Ejercicios</string>
+    <string name="nav_profile">Perfil</string>
+
+    <!-- Home Screen -->
+    <string name="home_greeting">Buen día,</string>
+    <string name="home_default_name">Atleta</string>
+    <string name="home_stats_sessions_label">Sesiones</string>
+    <string name="home_stats_sessions_unit">completadas</string>
+    <string name="home_stats_streak_label">Racha</string>
+    <string name="home_stats_streak_unit">días</string>
+    <string name="home_featured_routines">Rutinas destacadas</string>
+    <string name="home_continue_session">Continúa donde lo dejaste</string>
+
+    <!-- Routines List Screen -->
+    <string name="routines_title">Rutinas</string>
+    <string name="routines_search_hint">Buscar rutina…</string>
+    <string name="routines_search_content_desc">Buscar</string>
+    <string name="routines_clear_search_content_desc">Limpiar búsqueda</string>
+    <string name="routines_sort_content_desc">Ordenar</string>
+    <string name="routines_sort_default">Por defecto</string>
+    <string name="routines_sort_duration_asc">Duración: menor a mayor</string>
+    <string name="routines_sort_duration_desc">Duración: mayor a menor</string>
+    <string name="routines_empty_state">No hay rutinas con esos filtros</string>
+    <string name="routines_empty_emoji">😅</string>
+
+    <!-- Routine Detail Screen -->
+    <string name="routine_detail_start">⚡ Iniciar rutina</string>
+    <string name="routine_detail_duration_label">Duración</string>
+    <string name="routine_detail_exercises_label">Ejercicios</string>
+    <string name="routine_detail_difficulty_label">Nivel</string>
+    <string name="routine_detail_minutes_format" formatted="false">%d min</string>
+    <string name="routine_detail_exercises_count" formatted="false">%d ejercicios</string>
+    <string name="routine_detail_muscles_worked">Músculos trabajados</string>
+    <string name="routine_detail_exercises_section">Ejercicios</string>
+    <string name="routine_detail_sets_label">series</string>
+    <string name="routine_detail_reps_format" formatted="false">%d reps · %ds descanso</string>
+    <string name="routine_detail_duration_format" formatted="false">%ds · %ds descanso</string>
+    <string name="routine_detail_rest_only_format" formatted="false">%ds descanso</string>
+
+    <!-- Active Workout Screen -->
+    <string name="workout_exit_dialog_title">¿Salir del workout?</string>
+    <string name="workout_exit_dialog_message">Perderás el progreso de esta sesión.</string>
+    <string name="workout_exit_confirm">Salir</string>
+    <string name="workout_exit_dismiss">Continuar</string>
+    <string name="workout_close_content_desc">Salir</string>
+    <string name="workout_exercise_of_total" formatted="false">Ejercicio %d de %d</string>
+    <string name="workout_finish_routine">🏁 Terminar rutina</string>
+    <string name="workout_next_exercise">⏭ Siguiente ejercicio</string>
+    <string name="workout_set_completed">✅ Serie completada</string>
+    <string name="workout_set_label">Serie</string>
+    <string name="workout_reps_label">Reps</string>
+    <string name="workout_duration_label">Tiempo</string>
+    <string name="workout_rest_title">Descansa</string>
+    <string name="workout_rest_skip">Saltar descanso</string>
+    <string name="workout_rest_emoji">😮‍💨</string>
+
+    <!-- Workout Summary Screen -->
+    <string name="summary_congrats">¡Rutina completada!</string>
+    <string name="summary_trophy_emoji">🏆</string>
+    <string name="summary_time_label">Tiempo</string>
+    <string name="summary_calories_label">Calorías</string>
+    <string name="summary_sets_label">Series</string>
+    <string name="summary_exercises_label">Ejercicios</string>
+    <string name="summary_go_home">🏠 Volver al inicio</string>
+    <string name="summary_view_routines">🏋️ Ver otras rutinas</string>
+    <string name="summary_duration_format_short" formatted="false">%ds</string>
+    <string name="summary_duration_format_long" formatted="false">%dm %ds</string>
+
+    <!-- Exercises List Screen -->
+    <string name="exercises_title">Ejercicios</string>
+    <string name="exercises_search_hint">Buscar ejercicio…</string>
+    <string name="exercises_search_content_desc">Buscar</string>
+    <string name="exercises_clear_search_content_desc">Limpiar búsqueda</string>
+    <string name="exercises_muscle_label">Músculo</string>
+    <string name="exercises_difficulty_label">Nivel</string>
+    <string name="exercises_empty_state">No hay ejercicios con esos filtros</string>
+    <string name="exercises_empty_emoji">🤔</string>
+
+    <!-- Exercise Detail Screen -->
+    <string name="exercise_detail_description">Descripción</string>
+    <string name="exercise_detail_difficulty_label">Dificultad</string>
+    <string name="exercise_detail_reps_label">Reps</string>
+    <string name="exercise_detail_duration_label">Duración</string>
+    <string name="exercise_detail_sets_label">Series</string>
+
+    <!-- Profile Screen -->
+    <string name="profile_title">Mi perfil</string>
+    <string name="profile_edit_content_desc">Editar perfil</string>
+    <string name="profile_stats_sessions_label">Sesiones</string>
+    <string name="profile_stats_sessions_emoji">🏋️</string>
+    <string name="profile_stats_streak_label">Racha (días)</string>
+    <string name="profile_stats_streak_emoji">🔥</string>
+    <string name="profile_stats_minutes_label">Minutos totales</string>
+    <string name="profile_stats_minutes_emoji">⏱️</string>
+    <string name="profile_stats_favorite_label">Rutina favorita</string>
+    <string name="profile_stats_favorite_emoji">⭐</string>
+    <string name="profile_info_level_label">Nivel</string>
+    <string name="profile_info_weight_label">Peso</string>
+    <string name="profile_info_height_label">Estatura</string>
+    <string name="profile_info_goal_label">Objetivo</string>
+    <string name="profile_weight_format">%s kg</string>
+    <string name="profile_height_format">%s cm</string>
+
+    <!-- Edit Profile Modal -->
+    <string name="edit_profile_title">Editar perfil</string>
+    <string name="edit_profile_name_hint">Nombre</string>
+    <string name="edit_profile_weight_hint">Peso (kg)</string>
+    <string name="edit_profile_height_hint">Estatura (cm)</string>
+    <string name="edit_profile_goal_label">Objetivo</string>
+    <string name="edit_profile_experience_label">Nivel de experiencia</string>
+
+    <!-- Difficulty Levels -->
+    <string name="difficulty_beginner">Principiante</string>
+    <string name="difficulty_intermediate">Intermedio</string>
+    <string name="difficulty_advanced">Avanzado</string>
+
+    <!-- Workout Types -->
+    <string name="workout_type_home">Casa</string>
+    <string name="workout_type_gym">Gimnasio</string>
+    <string name="workout_type_home_emoji">🏠</string>
+    <string name="workout_type_gym_emoji">🏋️</string>
+
+    <!-- Muscle Groups -->
+    <string name="muscle_chest">Pecho</string>
+    <string name="muscle_back">Espalda</string>
+    <string name="muscle_shoulders">Hombros</string>
+    <string name="muscle_biceps">Bíceps</string>
+    <string name="muscle_triceps">Tríceps</string>
+    <string name="muscle_core">Core</string>
+    <string name="muscle_glutes">Glúteos</string>
+    <string name="muscle_legs">Piernas</string>
+    <string name="muscle_full_body">Cuerpo completo</string>
+    <string name="muscle_cardio">Cardio</string>
+
+    <!-- Fitness Goals -->
+    <string name="goal_lose_weight">Perder peso</string>
+    <string name="goal_build_muscle">Ganar músculo</string>
+    <string name="goal_improve_endurance">Mejorar resistencia</string>
+    <string name="goal_stay_active">Mantenerme activo</string>
+
+    <!-- Theme -->
+    <string name="profile_theme_label">Tema</string>
+    <string name="theme_system">Sistema</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Oscuro</string>
+
+    <!-- Accessibility / Content Descriptions -->
+    <string name="cd_routine_card">Tarjeta de rutina</string>
+    <string name="cd_exercise_card">Tarjeta de ejercicio</string>
+    <string name="cd_back_button">Volver</string>
+    <string name="cd_edit_button">Editar</string>
+    <string name="cd_sort_button">Ordenar</string>
+    <string name="cd_search_button">Buscar</string>
+    <string name="cd_clear_search_button">Limpiar búsqueda</string>
+    <string name="cd_workout_type_toggle">Cambiar tipo de entrenamiento</string>
+    <string name="cd_timer">Temporizador</string>
+    <string name="cd_rest_timer">Temporizador de descanso</string>
 </resources>

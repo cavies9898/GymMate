@@ -27,6 +27,9 @@ class ExerciseRepositoryImpl @Inject constructor(
             list.map { it.toDomain() }
         }
 
+    override fun getExerciseByIdFlow(id: Long): Flow<Exercise?> =
+        exerciseDao.getExerciseByIdFlow(id).map { it?.toDomain() }
+
     override suspend fun getExerciseById(id: Long): Exercise? =
         exerciseDao.getExerciseById(id)?.toDomain()
 }

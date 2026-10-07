@@ -6,69 +6,47 @@ import com.gymmate.app.domain.model.DifficultyLevel
 import com.gymmate.app.domain.model.FitnessGoal
 import com.gymmate.app.domain.model.UserProfile
 import com.gymmate.app.domain.model.WorkoutType
-import com.gymmate.app.domain.usecase.profile.GetUserProfileUseCase
+import com.gymmate.app.domain.usecase.profile.GetProfileDataUseCase
+import com.gymmate.app.domain.usecase.profile.ProfileData
 import com.gymmate.app.domain.usecase.profile.SaveUserProfileUseCase
-import com.gymmate.app.domain.usecase.workout.GetAllWorkoutSessionsUseCase
-import com.gymmate.app.domain.usecase.routine.GetAllRoutinesUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
-import java.time.LocalDate
-import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
 class ProfileViewModel @Inject constructor(
-    private val getUserProfileUseCase: GetUserProfileUseCase,
-    private val saveUserProfileUseCase: SaveUserProfileUseCase,
-    private val getAllWorkoutSessionsUseCase: GetAllWorkoutSessionsUseCase,
-    private val getAllRoutinesUseCase: GetAllRoutinesUseCase
+    private val getProfileDataUseCase: GetProfileDataUseCase,
+    private val saveUserProfileUseCase: SaveUserProfileUseCase
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ProfileUiState())
     val uiState: StateFlow<ProfileUiState> = _uiState.asStateFlow()
 
     init {
-        loadProfile()
+        observeProfileData()
     }
 
-    private fun loadProfile() {
+    private fun observeProfileData() {
         viewModelScope.launch {
-            combine(
-                getUserProfileUseCase(),
-                getAllWorkoutSessionsUseCase(),
-                getAllRoutinesUseCase()
-            ) { profile, sessions, routines ->
-                val completed = sessions.filter { it.completed }
-                val totalMinutes = completed.sumOf { it.durationMinutes }
-                val streak = calculateStreak(completed.map { it.startedAt })
-
-                // rutina favorita — la más repetida
-                val favoriteRoutineId = completed
-                    .groupingBy { it.routine.id }
-                    .eachCount()
-                    .maxByOrNull { it.value }?.key
-                val favoriteRoutineName = routines.find { it.id == favoriteRoutineId }?.name
-
-                ProfileUiState(
-                    isLoading = false,
-                    profile = profile,
-                    totalSessions = completed.size,
-                    activeStreak = streak,
-                    totalMinutes = totalMinutes,
-                    favoriteRoutineName = favoriteRoutineName,
-                    editName = profile?.name ?: "",
-                    editWeight = profile?.weight,
-                    editHeight = profile?.height,
-                    editGoal = profile?.fitnessGoal ?: FitnessGoal.STAY_ACTIVE,
-                    editExperience = profile?.experienceLevel ?: DifficultyLevel.BEGINNER
-                )
-            }.collect { state ->
-                _uiState.value = state
-            }
+            getProfileDataUseCase()
+                .collect { data: ProfileData ->
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        profile = data.profile,
+                        totalSessions = data.totalSessions,
+                        activeStreak = data.activeStreak,
+                        totalMinutes = data.totalMinutes,
+                        favoriteRoutineName = data.favoriteRoutineName,
+                        editName = data.profile?.name ?: "",
+                        editWeight = data.profile?.weight,
+                        editHeight = data.profile?.height,
+                        editGoal = data.profile?.fitnessGoal ?: FitnessGoal.STAY_ACTIVE,
+                        editExperience = data.profile?.experienceLevel ?: DifficultyLevel.BEGINNER
+                    )
+                }
         }
     }
 
@@ -124,19 +102,5 @@ class ProfileViewModel @Inject constructor(
             )
             _uiState.value = _uiState.value.copy(showEditModal = false)
         }
-    }
-
-    private fun calculateStreak(dates: List<LocalDateTime>): Int {
-        if (dates.isEmpty()) return 0
-        val uniqueDays = dates.map { it.toLocalDate() }.toSortedSet().toList().sortedDescending()
-        var streak = 0
-        var expected = LocalDate.now()
-        for (day in uniqueDays) {
-            if (day == expected) {
-                streak++
-                expected = expected.minusDays(1)
-            } else break
-        }
-        return streak
     }
 }

@@ -67,16 +67,13 @@ fun AppNavGraph(
                 navArgument("exercisesCompleted") { type = NavType.IntType }
             )
         ) { backStackEntry ->
-            val routineName = backStackEntry.arguments?.getString("routineName") ?: ""
-            val durationSeconds = backStackEntry.arguments?.getLong("durationSeconds") ?: 0L
-            val setsCompleted = backStackEntry.arguments?.getInt("setsCompleted") ?: 0
-            val exercisesCompleted = backStackEntry.arguments?.getInt("exercisesCompleted") ?: 0
+            val args = AppDestinations.WorkoutSummary.parseArgs(backStackEntry.destination.route)!!
             WorkoutSummaryScreen(
                 navController = navController,
-                routineName = routineName,
-                durationSeconds = durationSeconds,
-                setsCompleted = setsCompleted,
-                exercisesCompleted = exercisesCompleted
+                routineName = args.routineName,
+                durationSeconds = args.durationSeconds,
+                setsCompleted = args.setsCompleted,
+                exercisesCompleted = args.exercisesCompleted
             )
         }
         composable(

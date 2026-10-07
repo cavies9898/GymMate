@@ -25,37 +25,33 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.gymmate.app.core.utils.getRoutineIcon
+import com.gymmate.app.R
 import com.gymmate.app.domain.model.DifficultyLevel
 import com.gymmate.app.domain.model.Routine
 import com.gymmate.app.domain.model.WorkoutType
+import com.gymmate.app.presentation.ui.cardGradientColors
+import com.gymmate.app.presentation.ui.color
 
 @Composable
 fun RoutineCard(
     routine: Routine,
     onClick: () -> Unit
 ) {
-    val gradientColors = if (routine.workoutType == WorkoutType.HOME) {
-        listOf(Color(0xFF1A2C3D), Color(0xFF0D4F6B))
-    } else {
-        listOf(Color(0xFF1A2C3D), Color(0xFF2D1B4E))
-    }
-
-    val difficultyColor = when (routine.difficulty) {
-        DifficultyLevel.BEGINNER -> Color(0xFF4CAF50)
-        DifficultyLevel.INTERMEDIATE -> Color(0xFFFF9800)
-        DifficultyLevel.ADVANCED -> Color(0xFFE53935)
-    }
-
+    val gradientColors = routine.workoutType.cardGradientColors()
+    val difficultyColor = routine.difficulty.color()
     val difficultyLabel = when (routine.difficulty) {
-        DifficultyLevel.BEGINNER -> "Principiante"
-        DifficultyLevel.INTERMEDIATE -> "Intermedio"
-        DifficultyLevel.ADVANCED -> "Avanzado"
+        DifficultyLevel.BEGINNER -> stringResource(R.string.difficulty_beginner)
+        DifficultyLevel.INTERMEDIATE -> stringResource(R.string.difficulty_intermediate)
+        DifficultyLevel.ADVANCED -> stringResource(R.string.difficulty_advanced)
+    }
+    val workoutEmoji = when (routine.workoutType) {
+        WorkoutType.HOME -> "🏠"
+        WorkoutType.GYM -> "🏋️"
     }
 
     Card(
@@ -76,7 +72,7 @@ fun RoutineCard(
             ) {
                 // Icono grande
                 Text(
-                    text = getRoutineIcon(routine.name, routine.workoutType),
+                    text = workoutEmoji,
                     fontSize = 40.sp,
                     modifier = Modifier.size(56.dp)
                 )
@@ -89,7 +85,7 @@ fun RoutineCard(
                         text = routine.name,
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
-                        color = Color.White,
+                        color = androidx.compose.ui.graphics.Color.White,
                         maxLines = 1,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -97,7 +93,7 @@ fun RoutineCard(
                     Text(
                         text = routine.description,
                         style = MaterialTheme.typography.bodySmall,
-                        color = Color.White.copy(alpha = 0.6f),
+                        color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.6f),
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis
                     )
@@ -108,14 +104,14 @@ fun RoutineCard(
                             Icon(
                                 Icons.Default.AccessTime,
                                 contentDescription = null,
-                                tint = Color.White.copy(alpha = 0.7f),
+                                tint = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.7f),
                                 modifier = Modifier.size(14.dp)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
-                                text = "${routine.durationMinutes} min",
+                                text = stringResource(R.string.routine_detail_minutes_format, routine.durationMinutes),
                                 style = MaterialTheme.typography.labelSmall,
-                                color = Color.White.copy(alpha = 0.7f)
+                                color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.7f)
                             )
                         }
                         // Ejercicios
@@ -123,14 +119,14 @@ fun RoutineCard(
                             Icon(
                                 Icons.Default.FitnessCenter,
                                 contentDescription = null,
-                                tint = Color.White.copy(alpha = 0.7f),
+                                tint = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.7f),
                                 modifier = Modifier.size(14.dp)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
                             Text(
-                                text = "${routine.exercises.size} ejercicios",
+                                text = stringResource(R.string.routine_detail_exercises_count, routine.exercises.size),
                                 style = MaterialTheme.typography.labelSmall,
-                                color = Color.White.copy(alpha = 0.7f)
+                                color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.7f)
                             )
                         }
                     }
@@ -138,17 +134,17 @@ fun RoutineCard(
 
                 Spacer(modifier = Modifier.width(8.dp))
 
-                // Badge dificultad
+                // Badge dificultad - usa el color de dificultad como fondo con texto blanco
                 Box(
                     modifier = Modifier
                         .clip(RoundedCornerShape(8.dp))
-                        .background(difficultyColor.copy(alpha = 0.2f))
+                        .background(difficultyColor)
                         .padding(horizontal = 8.dp, vertical = 4.dp)
                 ) {
                     Text(
                         text = difficultyLabel,
                         style = MaterialTheme.typography.labelSmall,
-                        color = difficultyColor,
+                        color = androidx.compose.ui.graphics.Color.White,
                         fontWeight = FontWeight.Bold
                     )
                 }

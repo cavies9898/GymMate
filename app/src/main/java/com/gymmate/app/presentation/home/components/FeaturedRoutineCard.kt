@@ -19,28 +19,27 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.gymmate.app.core.utils.getRoutineIcon
+import com.gymmate.app.R
 import com.gymmate.app.domain.model.Routine
-import com.gymmate.app.domain.model.WorkoutType
+import com.gymmate.app.presentation.ui.cardGradientColors
+import com.gymmate.app.presentation.ui.emoji
 
 @Composable
 fun FeaturedRoutineCard(
     routine: Routine,
     onClick: () -> Unit
 ) {
-    val gradientColors = if (routine.workoutType == WorkoutType.HOME) {
-        listOf(Color(0xFF1A2C3D), Color(0xFF0D4F6B))
-    } else {
-        listOf(Color(0xFF1A2C3D), Color(0xFF2D1B4E))
+    val gradientColors = routine.workoutType.cardGradientColors()
+    val workoutIcon = routine.workoutType.emoji()
+    val workoutLabel = when (routine.workoutType) {
+        com.gymmate.app.domain.model.WorkoutType.HOME -> stringResource(R.string.workout_type_home)
+        com.gymmate.app.domain.model.WorkoutType.GYM -> stringResource(R.string.workout_type_gym)
     }
-
-    val workoutIcon = getRoutineIcon(routine.name, routine.workoutType)
-    val workoutLabel = if (routine.workoutType == WorkoutType.HOME) "🏠 Casa" else "🏋️ Gimnasio"
 
     Card(
         onClick = onClick,
@@ -65,7 +64,7 @@ fun FeaturedRoutineCard(
                     .padding(horizontal = 8.dp, vertical = 4.dp)
             ) {
                 Text(
-                    text = workoutLabel,
+                    text = "${workoutIcon} ${workoutLabel}",
                     style = MaterialTheme.typography.labelSmall,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -84,7 +83,7 @@ fun FeaturedRoutineCard(
                 Text(
                     text = routine.description,
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color.White.copy(alpha = 0.6f),
+                    color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.6f),
                     maxLines = 2,
                     overflow = TextOverflow.Ellipsis,
                     textAlign = androidx.compose.ui.text.style.TextAlign.Center
@@ -97,16 +96,20 @@ fun FeaturedRoutineCard(
                     text = routine.name,
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
-                    color = Color.White
+                    color = androidx.compose.ui.graphics.Color.White
                 )
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "${routine.durationMinutes} min · ${
-                        routine.difficulty.name.lowercase()
-                            .replaceFirstChar { it.uppercase() }
-                    }",
+                    text = stringResource(
+                        R.string.routine_detail_minutes_format,
+                        routine.durationMinutes
+                    ) + " · " + when (routine.difficulty) {
+                        com.gymmate.app.domain.model.DifficultyLevel.BEGINNER -> stringResource(R.string.difficulty_beginner)
+                        com.gymmate.app.domain.model.DifficultyLevel.INTERMEDIATE -> stringResource(R.string.difficulty_intermediate)
+                        com.gymmate.app.domain.model.DifficultyLevel.ADVANCED -> stringResource(R.string.difficulty_advanced)
+                    },
                     style = MaterialTheme.typography.bodySmall,
-                    color = Color.White.copy(alpha = 0.7f)
+                    color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.7f)
                 )
             }
         }

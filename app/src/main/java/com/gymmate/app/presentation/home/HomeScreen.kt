@@ -19,10 +19,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.gymmate.app.R
 import com.gymmate.app.presentation.home.components.FeaturedRoutineCard
 import com.gymmate.app.presentation.home.components.LastSessionCard
 import com.gymmate.app.presentation.home.components.StatCard
@@ -61,7 +63,7 @@ fun HomeScreen(
             ) {
                 Column {
                     Text(
-                        text = "Buen día,",
+                        text = stringResource(R.string.home_greeting),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                     )
@@ -88,15 +90,15 @@ fun HomeScreen(
             ) {
                 StatCard(
                     modifier = Modifier.weight(1f),
-                    label = "Sesiones",
+                    label = stringResource(R.string.home_stats_sessions_label),
                     value = uiState.completedSessions.toString(),
-                    unit = "completadas"
+                    unit = stringResource(R.string.home_stats_sessions_unit)
                 )
                 StatCard(
                     modifier = Modifier.weight(1f),
-                    label = "Racha",
+                    label = stringResource(R.string.home_stats_streak_label),
                     value = uiState.activeStreak.toString(),
-                    unit = "días"
+                    unit = stringResource(R.string.home_stats_streak_unit)
                 )
             }
         }
@@ -105,7 +107,7 @@ fun HomeScreen(
         item {
             Spacer(modifier = Modifier.height(24.dp))
             Text(
-                text = "Rutinas destacadas",
+                text = stringResource(R.string.home_featured_routines),
                 style = MaterialTheme.typography.titleMedium,
                 color = MaterialTheme.colorScheme.onBackground,
                 modifier = Modifier.padding(horizontal = 20.dp)
@@ -136,7 +138,7 @@ fun HomeScreen(
             item {
                 Spacer(modifier = Modifier.height(24.dp))
                 Text(
-                    text = "Continúa donde lo dejaste",
+                    text = stringResource(R.string.home_continue_session),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.padding(horizontal = 20.dp)

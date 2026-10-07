@@ -1,34 +1,29 @@
 package com.gymmate.app.presentation.routines.workout
 
-import android.content.Context
-import android.os.VibrationEffect
-import android.os.Vibrator
-import android.os.VibratorManager
-import android.os.Build
-import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gymmate.app.domain.usecase.routine.GetRoutineByIdUseCase
-import com.gymmate.app.domain.usecase.workout.SaveWorkoutSessionUseCase
 import com.gymmate.app.domain.model.WorkoutSession
+import com.gymmate.app.domain.service.VibrationService
+import com.gymmate.app.domain.usecase.routine.GetRoutineDetailUseCase
+import com.gymmate.app.domain.usecase.workout.SaveWorkoutSessionUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
 import javax.inject.Inject
 
 @HiltViewModel
 class ActiveWorkoutViewModel @Inject constructor(
-    private val getRoutineByIdUseCase: GetRoutineByIdUseCase,
+    private val getRoutineDetailUseCase: GetRoutineDetailUseCase,
     private val saveWorkoutSessionUseCase: SaveWorkoutSessionUseCase,
-    savedStateHandle: SavedStateHandle,
-    @ApplicationContext private val context: Context
+    private val vibrationService: VibrationService,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(ActiveWorkoutUiState())
@@ -46,31 +41,30 @@ class ActiveWorkoutViewModel @Inject constructor(
 
     private fun loadRoutine() {
         viewModelScope.launch {
-            val routine = getRoutineByIdUseCase(routineId)
-            if (routine != null) {
-                _uiState.value = _uiState.value.copy(
-                    isLoading = false,
-                    routineName = routine.name,
-                    exercises = routine.exercises.sortedBy { it.order }
-                )
-            }
+            getRoutineDetailUseCase(routineId)
+                .collect { routine ->
+                    if (routine != null) {
+                        _uiState.value = _uiState.value.copy(
+                            isLoading = false,
+                            routineName = routine.name,
+                            exercises = routine.exercises.sortedBy { it.order }
+                        )
+                    }
+                }
         }
     }
 
-    // Avanza a la siguiente serie o ejercicio
     fun onNextPressed() {
         val state = _uiState.value
         val exercise = state.currentExercise ?: return
-        vibrate()
+        vibrationService.vibrate()
 
         if (state.isLastSet && state.isLastExercise) {
-            // Rutina terminada
             finishWorkout()
             return
         }
 
         if (state.isLastSet) {
-            // Pasar al siguiente ejercicio
             _uiState.value = _uiState.value.copy(
                 currentExerciseIndex = state.currentExerciseIndex + 1,
                 currentSet = 1,
@@ -78,7 +72,6 @@ class ActiveWorkoutViewModel @Inject constructor(
             )
             startRestTimer(exercise.restSeconds)
         } else {
-            // Siguiente serie del mismo ejercicio
             _uiState.value = _uiState.value.copy(
                 currentSet = state.currentSet + 1,
                 totalSetsCompleted = state.totalSetsCompleted + 1
@@ -112,7 +105,7 @@ class ActiveWorkoutViewModel @Inject constructor(
                 phase = WorkoutPhase.EXERCISE,
                 restSecondsRemaining = 0
             )
-            vibrate()
+            vibrationService.vibrate()
         }
     }
 
@@ -135,7 +128,7 @@ class ActiveWorkoutViewModel @Inject constructor(
             totalSetsCompleted = _uiState.value.totalSetsCompleted + 1
         )
         viewModelScope.launch {
-            val currentRoutine = getRoutineByIdUseCase(routineId) ?: return@launch
+            val currentRoutine = getRoutineDetailUseCase(routineId).firstOrNull() ?: return@launch
             saveWorkoutSessionUseCase(
                 WorkoutSession(
                     id = 0,
@@ -147,21 +140,6 @@ class ActiveWorkoutViewModel @Inject constructor(
                 )
             )
         }
-    }
-
-    private fun vibrate() {
-        try {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                val manager = context.getSystemService(Context.VIBRATOR_MANAGER_SERVICE) as VibratorManager
-                manager.defaultVibrator.vibrate(
-                    VibrationEffect.createOneShot(2000, VibrationEffect.DEFAULT_AMPLITUDE)
-                )
-            } else {
-                @Suppress("DEPRECATION")
-                val vibrator = context.getSystemService(Context.VIBRATOR_SERVICE) as Vibrator
-                vibrator.vibrate(VibrationEffect.createOneShot(2000, VibrationEffect.DEFAULT_AMPLITUDE))
-            }
-        } catch (e: Exception) { Log.e("Error", "Error en permiso") }
     }
 
     override fun onCleared() {

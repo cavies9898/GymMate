@@ -13,8 +13,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import com.gymmate.app.R
 import com.gymmate.app.domain.model.WorkoutType
 
 @Composable
@@ -25,10 +26,13 @@ fun WorkoutTypeToggle(
     val isHome = selectedType == WorkoutType.HOME
 
     val backgroundColor by animateColorAsState(
-        targetValue = if (isHome) Color(0xFF0D4F6B) else Color(0xFF2D1B4E),
+        targetValue = if (isHome) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.secondary,
         animationSpec = tween(300),
         label = "toggleBg"
     )
+
+    val emoji = if (isHome) "🏠" else "🏋️"
+    val label = if (isHome) stringResource(R.string.workout_type_home) else stringResource(R.string.workout_type_gym)
 
     Surface(
         onClick = onToggle,
@@ -41,13 +45,13 @@ fun WorkoutTypeToggle(
             horizontalArrangement = Arrangement.spacedBy(6.dp)
         ) {
             Text(
-                text = if (isHome) "🏠" else "🏋️",
+                text = emoji,
                 style = MaterialTheme.typography.titleMedium
             )
             Text(
-                text = if (isHome) "Casa" else "Gimnasio",
+                text = label,
                 style = MaterialTheme.typography.labelLarge,
-                color = Color.White
+                color = MaterialTheme.colorScheme.onPrimary
             )
         }
     }

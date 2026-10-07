@@ -23,9 +23,11 @@ import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import com.gymmate.app.R
 import com.gymmate.app.domain.model.DifficultyLevel
 import com.gymmate.app.domain.model.FitnessGoal
 
@@ -55,7 +57,7 @@ fun EditProfileModal(
                 .verticalScroll(rememberScrollState())
         ) {
             Text(
-                text = "Editar perfil",
+                text = stringResource(R.string.edit_profile_title),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onSurface
@@ -67,7 +69,7 @@ fun EditProfileModal(
             OutlinedTextField(
                 value = uiState.editName,
                 onValueChange = onNameChange,
-                label = { Text("Nombre") },
+                label = { Text(stringResource(R.string.edit_profile_name_hint)) },
                 modifier = Modifier.fillMaxWidth(),
                 shape = RoundedCornerShape(12.dp),
                 singleLine = true
@@ -83,7 +85,7 @@ fun EditProfileModal(
                 OutlinedTextField(
                     value = uiState.editWeight?.toString() ?: "",
                     onValueChange = onWeightChange,
-                    label = { Text("Peso (kg)") },
+                    label = { Text(stringResource(R.string.edit_profile_weight_hint)) },
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(12.dp),
                     singleLine = true,
@@ -92,7 +94,7 @@ fun EditProfileModal(
                 OutlinedTextField(
                     value = uiState.editHeight?.toString() ?: "",
                     onValueChange = onHeightChange,
-                    label = { Text("Estatura (cm)") },
+                    label = { Text(stringResource(R.string.edit_profile_height_hint)) },
                     modifier = Modifier.weight(1f),
                     shape = RoundedCornerShape(12.dp),
                     singleLine = true,
@@ -104,7 +106,7 @@ fun EditProfileModal(
 
             // Objetivo
             Text(
-                text = "Objetivo",
+                text = stringResource(R.string.edit_profile_goal_label),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
             )
@@ -117,7 +119,12 @@ fun EditProfileModal(
                     FilterChip(
                         selected = uiState.editGoal == goal,
                         onClick = { onGoalChange(goal) },
-                        label = { Text(goalLabel(goal), style = MaterialTheme.typography.labelSmall) }
+                        label = { Text(when (goal) {
+                            FitnessGoal.LOSE_WEIGHT -> stringResource(R.string.goal_lose_weight)
+                            FitnessGoal.BUILD_MUSCLE -> stringResource(R.string.goal_build_muscle)
+                            FitnessGoal.IMPROVE_ENDURANCE -> stringResource(R.string.goal_improve_endurance)
+                            FitnessGoal.STAY_ACTIVE -> stringResource(R.string.goal_stay_active)
+                        }, style = MaterialTheme.typography.labelSmall) }
                     )
                 }
             }
@@ -126,7 +133,7 @@ fun EditProfileModal(
 
             // Nivel
             Text(
-                text = "Nivel de experiencia",
+                text = stringResource(R.string.edit_profile_experience_label),
                 style = MaterialTheme.typography.labelLarge,
                 color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.7f)
             )
@@ -136,7 +143,11 @@ fun EditProfileModal(
                     FilterChip(
                         selected = uiState.editExperience == level,
                         onClick = { onExperienceChange(level) },
-                        label = { Text(experienceLabel(level)) }
+                        label = { Text(when (level) {
+                            DifficultyLevel.BEGINNER -> stringResource(R.string.difficulty_beginner)
+                            DifficultyLevel.INTERMEDIATE -> stringResource(R.string.difficulty_intermediate)
+                            DifficultyLevel.ADVANCED -> stringResource(R.string.difficulty_advanced)
+                        }) }
                     )
                 }
             }
@@ -153,7 +164,7 @@ fun EditProfileModal(
                 )
             ) {
                 Text(
-                    text = "Guardar cambios",
+                    text = stringResource(R.string.save),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(vertical = 4.dp)
@@ -166,7 +177,7 @@ fun EditProfileModal(
                 onClick = onDismiss,
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Cancelar", color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f))
+                Text(stringResource(R.string.cancel), color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f))
             }
 
             Spacer(modifier = Modifier.height(24.dp))

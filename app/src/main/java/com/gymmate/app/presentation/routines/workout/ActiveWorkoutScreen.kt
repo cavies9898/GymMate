@@ -49,8 +49,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -58,8 +58,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.gymmate.app.R
 import com.gymmate.app.presentation.navigation.AppDestinations
-import com.gymmate.app.presentation.routines.detail.components.getExerciseIcon
+import com.gymmate.app.presentation.ui.icon
 
 @Composable
 fun ActiveWorkoutScreen(
@@ -97,16 +98,16 @@ fun ActiveWorkoutScreen(
     if (showExitDialog) {
         AlertDialog(
             onDismissRequest = { showExitDialog = false },
-            title = { Text("¿Salir del workout?") },
-            text = { Text("Perderás el progreso de esta sesión.") },
+            title = { Text(stringResource(R.string.workout_exit_dialog_title)) },
+            text = { Text(stringResource(R.string.workout_exit_dialog_message)) },
             confirmButton = {
                 TextButton(onClick = { navController.popBackStack() }) {
-                    Text("Salir", color = Color(0xFFE53935))
+                    Text(stringResource(R.string.workout_exit_confirm), color = MaterialTheme.colorScheme.error)
                 }
             },
             dismissButton = {
                 TextButton(onClick = { showExitDialog = false }) {
-                    Text("Continuar")
+                    Text(stringResource(R.string.workout_exit_dismiss))
                 }
             }
         )
@@ -115,7 +116,7 @@ fun ActiveWorkoutScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF0D1B2A))
+            .background(MaterialTheme.colorScheme.background)
     ) {
         Column(
             modifier = Modifier
@@ -132,19 +133,19 @@ fun ActiveWorkoutScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 IconButton(onClick = { showExitDialog = true }) {
-                    Icon(Icons.Default.Close, contentDescription = "Salir", tint = Color.White)
+                    Icon(Icons.Default.Close, contentDescription = stringResource(R.string.workout_close_content_desc), tint = MaterialTheme.colorScheme.onBackground)
                 }
                 Text(
                     text = uiState.routineName,
                     style = MaterialTheme.typography.titleMedium,
-                    color = Color.White,
+                    color = MaterialTheme.colorScheme.onBackground,
                     fontWeight = FontWeight.Bold
                 )
                 // Timer elapsed
                 Text(
                     text = formatElapsed(uiState.elapsedSeconds),
                     style = MaterialTheme.typography.bodyMedium,
-                    color = Color.White.copy(alpha = 0.6f)
+                    color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                 )
             }
 
@@ -162,16 +163,16 @@ fun ActiveWorkoutScreen(
                     .height(6.dp)
                     .clip(RoundedCornerShape(3.dp)),
                 color = MaterialTheme.colorScheme.primary,
-                trackColor = Color.White.copy(alpha = 0.1f),
+                trackColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
                 strokeCap = StrokeCap.Round
             )
 
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = "Ejercicio ${uiState.currentExerciseIndex + 1} de ${uiState.totalExercises}",
+                text = stringResource(R.string.workout_exercise_of_total, uiState.currentExerciseIndex + 1, uiState.totalExercises),
                 style = MaterialTheme.typography.labelMedium,
-                color = Color.White.copy(alpha = 0.5f),
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f),
                 modifier = Modifier.padding(horizontal = 16.dp)
             )
 
@@ -212,9 +213,9 @@ fun ActiveWorkoutScreen(
                 ) {
                     Text(
                         text = when {
-                            uiState.isLastSet && uiState.isLastExercise -> "🏁  Terminar rutina"
-                            uiState.isLastSet -> "⏭  Siguiente ejercicio"
-                            else -> "✅  Serie completada"
+                            uiState.isLastSet && uiState.isLastExercise -> stringResource(R.string.workout_finish_routine)
+                            uiState.isLastSet -> stringResource(R.string.workout_next_exercise)
+                            else -> stringResource(R.string.workout_set_completed)
                         },
                         style = MaterialTheme.typography.titleMedium,
                         fontWeight = FontWeight.Bold,
@@ -238,7 +239,7 @@ private fun ExerciseContent(uiState: ActiveWorkoutUiState) {
     ) {
         // Icono grande
         Text(
-            text = getExerciseIcon(exercise.exercise.muscleGroup.name),
+            text = exercise.exercise.muscleGroup.icon(),
             fontSize = 96.sp,
             textAlign = TextAlign.Center
         )
@@ -254,7 +255,7 @@ private fun ExerciseContent(uiState: ActiveWorkoutUiState) {
                 text = name,
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center
             )
         }
@@ -264,7 +265,7 @@ private fun ExerciseContent(uiState: ActiveWorkoutUiState) {
         Text(
             text = exercise.exercise.description,
             style = MaterialTheme.typography.bodyMedium,
-            color = Color.White.copy(alpha = 0.6f),
+            color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f),
             textAlign = TextAlign.Center
         )
 
@@ -277,15 +278,15 @@ private fun ExerciseContent(uiState: ActiveWorkoutUiState) {
         ) {
             // Serie actual
             WorkoutStatBox(
-                label = "Serie",
+                label = stringResource(R.string.workout_set_label),
                 value = "${uiState.currentSet} / ${exercise.sets}"
             )
 
             // Reps o duración
             if (exercise.reps != null) {
-                WorkoutStatBox(label = "Reps", value = "${exercise.reps}")
+                WorkoutStatBox(label = stringResource(R.string.workout_reps_label), value = "${exercise.reps}")
             } else if (exercise.durationSeconds != null) {
-                WorkoutStatBox(label = "Tiempo", value = "${exercise.durationSeconds}s")
+                WorkoutStatBox(label = stringResource(R.string.workout_duration_label), value = "${exercise.durationSeconds}s")
             }
         }
     }
@@ -302,26 +303,26 @@ private fun RestContent(
             .padding(horizontal = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(text = "😮‍💨", fontSize = 64.sp)
+        Text(text = stringResource(R.string.workout_rest_emoji), fontSize = 64.sp)
 
         Spacer(modifier = Modifier.height(16.dp))
 
         Text(
-            text = "Descansa",
+            text = stringResource(R.string.workout_rest_title),
             style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
-            color = Color.White
+            color = MaterialTheme.colorScheme.onBackground
         )
 
         Spacer(modifier = Modifier.height(24.dp))
 
         // Timer circular
         Box(contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(
+            androidx.compose.material3.CircularProgressIndicator(
                 progress = { secondsRemaining / 60f },
                 modifier = Modifier.size(120.dp),
                 color = MaterialTheme.colorScheme.primary,
-                trackColor = Color.White.copy(alpha = 0.1f),
+                trackColor = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.1f),
                 strokeWidth = 8.dp,
                 strokeCap = StrokeCap.Round
             )
@@ -329,7 +330,7 @@ private fun RestContent(
                 text = "$secondsRemaining",
                 style = MaterialTheme.typography.displaySmall,
                 fontWeight = FontWeight.Bold,
-                color = Color.White
+                color = MaterialTheme.colorScheme.onBackground
             )
         }
 
@@ -340,7 +341,7 @@ private fun RestContent(
             shape = RoundedCornerShape(12.dp)
         ) {
             Text(
-                text = "Saltar descanso",
+                text = stringResource(R.string.workout_rest_skip),
                 color = MaterialTheme.colorScheme.primary
             )
         }
@@ -352,7 +353,7 @@ private fun WorkoutStatBox(label: String, value: String) {
     Column(
         modifier = Modifier
             .clip(RoundedCornerShape(12.dp))
-            .background(Color.White.copy(alpha = 0.08f))
+            .background(MaterialTheme.colorScheme.surfaceVariant)
             .padding(horizontal = 24.dp, vertical = 12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -360,12 +361,12 @@ private fun WorkoutStatBox(label: String, value: String) {
             text = value,
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
-            color = Color.White
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
         Text(
             text = label,
             style = MaterialTheme.typography.labelSmall,
-            color = Color.White.copy(alpha = 0.5f)
+            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.7f)
         )
     }
 }

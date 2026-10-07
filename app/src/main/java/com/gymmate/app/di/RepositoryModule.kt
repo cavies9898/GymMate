@@ -2,10 +2,12 @@ package com.gymmate.app.di
 
 import com.gymmate.app.data.repository.ExerciseRepositoryImpl
 import com.gymmate.app.data.repository.RoutineRepositoryImpl
+import com.gymmate.app.data.repository.ThemePreferenceRepositoryImpl
 import com.gymmate.app.data.repository.UserProfileRepositoryImpl
 import com.gymmate.app.data.repository.WorkoutSessionRepositoryImpl
 import com.gymmate.app.domain.repository.ExerciseRepository
 import com.gymmate.app.domain.repository.RoutineRepository
+import com.gymmate.app.domain.repository.ThemePreferenceRepository
 import com.gymmate.app.domain.repository.UserProfileRepository
 import com.gymmate.app.domain.repository.WorkoutSessionRepository
 import dagger.Binds
@@ -33,4 +35,8 @@ abstract class RepositoryModule {
     @Binds
     @Singleton
     abstract fun bindUserProfileRepository(impl: UserProfileRepositoryImpl): UserProfileRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindThemePreferenceRepository(impl: ThemePreferenceRepositoryImpl): ThemePreferenceRepository
 }

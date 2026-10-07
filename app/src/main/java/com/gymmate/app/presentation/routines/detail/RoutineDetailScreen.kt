@@ -38,19 +38,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
-import com.gymmate.app.core.utils.getRoutineIcon
+import com.gymmate.app.R
 import com.gymmate.app.domain.model.DifficultyLevel
 import com.gymmate.app.domain.model.Routine
 import com.gymmate.app.domain.model.WorkoutType
 import com.gymmate.app.presentation.navigation.AppDestinations
 import com.gymmate.app.presentation.routines.detail.components.ExerciseRow
 import com.gymmate.app.presentation.routines.detail.components.MuscleGroupChip
+import com.gymmate.app.presentation.ui.cardGradientColors
+import com.gymmate.app.presentation.ui.color
+import com.gymmate.app.presentation.ui.gradientColors
+import com.gymmate.app.presentation.ui.emoji
 
 @Composable
 fun RoutineDetailScreen(
@@ -89,7 +94,7 @@ fun RoutineDetailScreen(
             // Ejercicios
             item {
                 Text(
-                    text = "Ejercicios",
+                    text = stringResource(R.string.routine_detail_exercises_section),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     color = MaterialTheme.colorScheme.onBackground,
@@ -133,7 +138,7 @@ fun RoutineDetailScreen(
                 )
             ) {
                 Text(
-                    text = "⚡  Iniciar rutina",
+                    text = stringResource(R.string.routine_detail_start),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(vertical = 4.dp)
@@ -145,11 +150,7 @@ fun RoutineDetailScreen(
 
 @Composable
 private fun RoutineDetailHeader(routine: Routine, navController: NavController) {
-    val gradientColors = if (routine.workoutType == WorkoutType.HOME) {
-        listOf(Color(0xFF0D2B4E), Color(0xFF0D4F6B), Color(0xFF1A2C3D))
-    } else {
-        listOf(Color(0xFF1A0D2E), Color(0xFF2D1B4E), Color(0xFF1A2C3D))
-    }
+    val gradientColors = routine.workoutType.gradientColors()
 
     Box(
         modifier = Modifier
@@ -165,7 +166,7 @@ private fun RoutineDetailHeader(routine: Routine, navController: NavController) 
                 .align(Alignment.BottomCenter)
                 .background(
                     Brush.verticalGradient(
-                        listOf(Color.Transparent, Color(0xFF0D1B2A))
+                        listOf(Color.Transparent, MaterialTheme.colorScheme.background)
                     )
                 )
         )
@@ -182,7 +183,7 @@ private fun RoutineDetailHeader(routine: Routine, navController: NavController) 
         ) {
             Icon(
                 Icons.Default.ArrowBack,
-                contentDescription = "Volver",
+                contentDescription = stringResource(R.string.cd_back_button),
                 tint = Color.White
             )
         }
@@ -195,7 +196,7 @@ private fun RoutineDetailHeader(routine: Routine, navController: NavController) 
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = getRoutineIcon(routine.name, routine.workoutType),
+                text = routine.workoutType.emoji(),
                 fontSize = 72.sp
             )
         }
@@ -224,15 +225,11 @@ private fun RoutineDetailHeader(routine: Routine, navController: NavController) 
 
 @Composable
 private fun RoutineInfoSection(routine: Routine) {
-    val difficultyColor = when (routine.difficulty) {
-        DifficultyLevel.BEGINNER -> Color(0xFF4CAF50)
-        DifficultyLevel.INTERMEDIATE -> Color(0xFFFF9800)
-        DifficultyLevel.ADVANCED -> Color(0xFFE53935)
-    }
+    val difficultyColor = routine.difficulty.color()
     val difficultyLabel = when (routine.difficulty) {
-        DifficultyLevel.BEGINNER -> "Principiante"
-        DifficultyLevel.INTERMEDIATE -> "Intermedio"
-        DifficultyLevel.ADVANCED -> "Avanzado"
+        DifficultyLevel.BEGINNER -> stringResource(R.string.difficulty_beginner)
+        DifficultyLevel.INTERMEDIATE -> stringResource(R.string.difficulty_intermediate)
+        DifficultyLevel.ADVANCED -> stringResource(R.string.difficulty_advanced)
     }
     val difficultyDots = when (routine.difficulty) {
         DifficultyLevel.BEGINNER -> 1
@@ -250,15 +247,15 @@ private fun RoutineInfoSection(routine: Routine) {
         InfoChip(
             modifier = Modifier.weight(1f),
             icon = { Icon(Icons.Default.AccessTime, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp)) },
-            label = "Duración",
-            value = "${routine.durationMinutes} min"
+            label = stringResource(R.string.routine_detail_duration_label),
+            value = stringResource(R.string.routine_detail_minutes_format, routine.durationMinutes)
         )
 
         // Ejercicios
         InfoChip(
             modifier = Modifier.weight(1f),
             icon = { Icon(Icons.Default.FitnessCenter, contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(18.dp)) },
-            label = "Ejercicios",
+            label = stringResource(R.string.routine_detail_exercises_label),
             value = "${routine.exercises.size}"
         )
 
@@ -280,7 +277,7 @@ private fun RoutineInfoSection(routine: Routine) {
                     }
                 }
             },
-            label = "Nivel",
+            label = stringResource(R.string.routine_detail_difficulty_label),
             value = difficultyLabel,
             valueColor = difficultyColor
         )
@@ -328,7 +325,7 @@ private fun MuscleGroupsSection(routine: Routine) {
 
     Column(modifier = Modifier.padding(horizontal = 20.dp)) {
         Text(
-            text = "Músculos trabajados",
+            text = stringResource(R.string.routine_detail_muscles_worked),
             style = MaterialTheme.typography.titleMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground

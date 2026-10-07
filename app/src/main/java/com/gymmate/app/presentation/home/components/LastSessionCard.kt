@@ -18,10 +18,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import com.gymmate.app.R
 import com.gymmate.app.domain.model.WorkoutSession
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun LastSessionCard(
@@ -54,13 +57,20 @@ fun LastSessionCard(
                 )
                 Text(
                     text = session.startedAt.format(
-                        DateTimeFormatter.ofPattern("dd MMM · HH:mm")
+                        DateTimeFormatter.ofPattern("dd MMM · HH:mm", Locale.getDefault())
                     ),
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
                 )
                 Text(
-                    text = "${session.durationMinutes} min · ${session.routine.difficulty.name.lowercase().replaceFirstChar { it.uppercase() }}",
+                    text = stringResource(
+                        R.string.routine_detail_minutes_format,
+                        session.durationMinutes
+                    ) + " · " + when (session.routine.difficulty) {
+                        com.gymmate.app.domain.model.DifficultyLevel.BEGINNER -> stringResource(R.string.difficulty_beginner)
+                        com.gymmate.app.domain.model.DifficultyLevel.INTERMEDIATE -> stringResource(R.string.difficulty_intermediate)
+                        com.gymmate.app.domain.model.DifficultyLevel.ADVANCED -> stringResource(R.string.difficulty_advanced)
+                    },
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -74,7 +84,7 @@ fun LastSessionCard(
                 Spacer(modifier = Modifier.width(4.dp))
                 Icon(
                     imageVector = Icons.Default.PlayArrow,
-                    contentDescription = "Repetir rutina",
+                    contentDescription = stringResource(R.string.cd_routine_card),
                     tint = MaterialTheme.colorScheme.primary
                 )
             }

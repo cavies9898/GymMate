@@ -30,15 +30,19 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.gymmate.app.R
 import com.gymmate.app.domain.model.DifficultyLevel
+import com.gymmate.app.domain.model.MuscleGroup
 import com.gymmate.app.presentation.routines.detail.components.MuscleGroupChip
-import com.gymmate.app.presentation.routines.detail.components.getExerciseIcon
+import com.gymmate.app.presentation.ui.color
+import com.gymmate.app.presentation.ui.icon
 
 @Composable
 fun ExerciseDetailScreen(
@@ -56,16 +60,17 @@ fun ExerciseDetailScreen(
 
     val exercise = uiState.exercise ?: return
 
-    val difficultyColor = when (exercise.difficulty) {
-        DifficultyLevel.BEGINNER -> Color(0xFF4CAF50)
-        DifficultyLevel.INTERMEDIATE -> Color(0xFFFF9800)
-        DifficultyLevel.ADVANCED -> Color(0xFFE53935)
+    val difficultyColor = exercise.difficulty.color()
+    val difficultyLabel = when (exercise.difficulty) {
+        DifficultyLevel.BEGINNER -> stringResource(R.string.difficulty_beginner)
+        DifficultyLevel.INTERMEDIATE -> stringResource(R.string.difficulty_intermediate)
+        DifficultyLevel.ADVANCED -> stringResource(R.string.difficulty_advanced)
     }
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF0D1B2A))
+            .background(MaterialTheme.colorScheme.background)
             .verticalScroll(rememberScrollState())
             .navigationBarsPadding()
     ) {
@@ -76,7 +81,7 @@ fun ExerciseDetailScreen(
                 .height(240.dp)
                 .background(
                     Brush.verticalGradient(
-                        listOf(Color(0xFF1A2C3D), Color(0xFF0D1B2A))
+                        listOf(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.primary)
                     )
                 )
         ) {
@@ -91,7 +96,7 @@ fun ExerciseDetailScreen(
             ) {
                 Icon(
                     Icons.Default.ArrowBack,
-                    contentDescription = "Volver",
+                    contentDescription = stringResource(R.string.cd_back_button),
                     tint = Color.White
                 )
             }
@@ -101,7 +106,7 @@ fun ExerciseDetailScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
-                    text = getExerciseIcon(exercise.muscleGroup.name),
+                    text = exercise.muscleGroup.icon(),
                     fontSize = 80.sp
                 )
             }
@@ -114,7 +119,7 @@ fun ExerciseDetailScreen(
                 text = exercise.name,
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color.White
+                color = MaterialTheme.colorScheme.onBackground
             )
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -125,38 +130,34 @@ fun ExerciseDetailScreen(
 
             // Descripción
             Text(
-                text = "Descripción",
+                text = stringResource(R.string.exercise_detail_description),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color.White
+                color = MaterialTheme.colorScheme.onBackground
             )
             Spacer(modifier = Modifier.height(6.dp))
             Text(
                 text = exercise.description,
                 style = MaterialTheme.typography.bodyMedium,
-                color = Color.White.copy(alpha = 0.7f)
+                color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.7f)
             )
 
             Spacer(modifier = Modifier.height(20.dp))
 
             // Info chips
             Row(horizontalArrangement = androidx.compose.foundation.layout.Arrangement.spacedBy(12.dp)) {
-                InfoBox(
-                    label = "Dificultad",
-                    value = when (exercise.difficulty) {
-                        DifficultyLevel.BEGINNER -> "Principiante"
-                        DifficultyLevel.INTERMEDIATE -> "Intermedio"
-                        DifficultyLevel.ADVANCED -> "Avanzado"
-                    },
-                    valueColor = difficultyColor
+                DifficultyChip(
+                    label = stringResource(R.string.exercise_detail_difficulty_label),
+                    value = difficultyLabel,
+                    color = difficultyColor
                 )
                 if (exercise.reps != null) {
-                    InfoBox(label = "Reps", value = "${exercise.reps}")
+                    InfoChip(label = stringResource(R.string.exercise_detail_reps_label), value = "${exercise.reps}")
                 }
                 if (exercise.durationSeconds != null) {
-                    InfoBox(label = "Duración", value = "${exercise.durationSeconds}s")
+                    InfoChip(label = stringResource(R.string.exercise_detail_duration_label), value = "${exercise.durationSeconds}s")
                 }
-                InfoBox(label = "Series", value = "${exercise.sets}")
+                InfoChip(label = stringResource(R.string.exercise_detail_sets_label), value = "${exercise.sets}")
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -165,28 +166,62 @@ fun ExerciseDetailScreen(
 }
 
 @Composable
-private fun InfoBox(
+private fun DifficultyChip(
     label: String,
     value: String,
-    valueColor: Color = Color.White
+    color: androidx.compose.ui.graphics.Color
 ) {
-    Column(
+    Box(
         modifier = Modifier
             .clip(RoundedCornerShape(12.dp))
-            .background(Color.White.copy(alpha = 0.07f))
+            .background(color)
             .padding(horizontal = 16.dp, vertical = 12.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+        contentAlignment = Alignment.Center
     ) {
-        Text(
-            text = value,
-            style = MaterialTheme.typography.titleMedium,
-            fontWeight = FontWeight.Bold,
-            color = valueColor
-        )
-        Text(
-            text = label,
-            style = MaterialTheme.typography.labelSmall,
-            color = Color.White.copy(alpha = 0.5f)
-        )
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = value,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = androidx.compose.ui.graphics.Color.White
+            )
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelSmall,
+                color = androidx.compose.ui.graphics.Color.White.copy(alpha = 0.8f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun InfoChip(
+    label: String,
+    value: String
+) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(12.dp))
+            .background(MaterialTheme.colorScheme.surface)
+            .padding(horizontal = 16.dp, vertical = 12.dp),
+        contentAlignment = Alignment.Center
+    ) {
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = value,
+                style = MaterialTheme.typography.titleMedium,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onSurface
+            )
+            Text(
+                text = label,
+                style = MaterialTheme.typography.labelSmall,
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f)
+            )
+        }
     }
 }

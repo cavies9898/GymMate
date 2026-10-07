@@ -4,12 +4,11 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gymmate.app.domain.model.Exercise
-import com.gymmate.app.domain.usecase.exercise.GetAllExercisesUseCase
+import com.gymmate.app.domain.usecase.exercise.GetExerciseDetailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -20,7 +19,7 @@ data class ExerciseDetailUiState(
 
 @HiltViewModel
 class ExerciseDetailViewModel @Inject constructor(
-    private val getAllExercisesUseCase: GetAllExercisesUseCase,
+    private val getExerciseDetailUseCase: GetExerciseDetailUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -34,12 +33,13 @@ class ExerciseDetailViewModel @Inject constructor(
 
     private fun loadExercise(exerciseId: Long) {
         viewModelScope.launch {
-            val exercise = getAllExercisesUseCase().first()
-                .find { it.id == exerciseId }
-            _uiState.value = ExerciseDetailUiState(
-                isLoading = false,
-                exercise = exercise
-            )
+            getExerciseDetailUseCase(exerciseId)
+                .collect { exercise ->
+                    _uiState.value = ExerciseDetailUiState(
+                        isLoading = false,
+                        exercise = exercise
+                    )
+                }
         }
     }
 }

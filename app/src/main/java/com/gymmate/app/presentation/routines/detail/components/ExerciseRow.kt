@@ -13,12 +13,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.gymmate.app.core.utils.getRoutineIcon
+import com.gymmate.app.R
 import com.gymmate.app.domain.model.RoutineExercise
-import com.gymmate.app.domain.model.WorkoutType
+import com.gymmate.app.presentation.ui.icon
 
 @Composable
 fun ExerciseRow(
@@ -46,7 +47,7 @@ fun ExerciseRow(
 
         // Icono del ejercicio
         Text(
-            text = getExerciseIcon(exercise.muscleGroup.name),
+            text = exercise.muscleGroup.icon(),
             fontSize = 28.sp
         )
 
@@ -62,7 +63,11 @@ fun ExerciseRow(
             )
             Spacer(modifier = Modifier.height(2.dp))
             Text(
-                text = buildExerciseDetail(routineExercise),
+                text = when {
+                    routineExercise.reps != null -> stringResource(R.string.routine_detail_reps_format, routineExercise.reps, routineExercise.restSeconds)
+                    routineExercise.durationSeconds != null -> stringResource(R.string.routine_detail_duration_format, routineExercise.durationSeconds, routineExercise.restSeconds)
+                    else -> stringResource(R.string.routine_detail_rest_only_format, routineExercise.restSeconds)
+                },
                 style = MaterialTheme.typography.bodySmall,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
             )
@@ -77,34 +82,10 @@ fun ExerciseRow(
                 color = MaterialTheme.colorScheme.primary
             )
             Text(
-                text = "series",
+                text = stringResource(R.string.routine_detail_sets_label),
                 style = MaterialTheme.typography.labelSmall,
                 color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.5f)
             )
         }
-    }
-}
-
-private fun buildExerciseDetail(routineExercise: RoutineExercise): String {
-    return when {
-        routineExercise.reps != null -> "${routineExercise.reps} reps · ${routineExercise.restSeconds}s descanso"
-        routineExercise.durationSeconds != null -> "${routineExercise.durationSeconds}s · ${routineExercise.restSeconds}s descanso"
-        else -> "${routineExercise.restSeconds}s descanso"
-    }
-}
-
-fun getExerciseIcon(muscleGroup: String): String {
-    return when (muscleGroup.uppercase()) {
-        "CHEST" -> "💪"
-        "BACK" -> "🏋️"
-        "SHOULDERS" -> "🔱"
-        "BICEPS" -> "💪"
-        "TRICEPS" -> "💪"
-        "CORE" -> "🎯"
-        "GLUTES" -> "🦵"
-        "LEGS" -> "🦵"
-        "FULL_BODY" -> "⚡"
-        "CARDIO" -> "🫀"
-        else -> "🏃"
     }
 }

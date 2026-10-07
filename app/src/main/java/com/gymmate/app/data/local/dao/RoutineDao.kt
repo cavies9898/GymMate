@@ -23,6 +23,10 @@ interface RoutineDao {
 
     @Transaction
     @Query("SELECT * FROM routines WHERE id = :id")
+    fun getRoutineByIdFlow(id: Long): Flow<RoutineWithExercises?>
+
+    @Transaction
+    @Query("SELECT * FROM routines WHERE id = :id")
     suspend fun getRoutineById(id: Long): RoutineWithExercises?
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)

@@ -31,12 +31,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.gymmate.app.R
 import com.gymmate.app.domain.model.DifficultyLevel
 import com.gymmate.app.domain.model.FitnessGoal
 
@@ -79,7 +81,7 @@ fun ProfileScreen(
                 .height(200.dp)
                 .background(
                     Brush.verticalGradient(
-                        listOf(Color(0xFF1A2C3D), Color(0xFF0D1B2A))
+                        listOf(MaterialTheme.colorScheme.primaryContainer, MaterialTheme.colorScheme.primary)
                     )
                 )
         ) {
@@ -101,16 +103,22 @@ fun ProfileScreen(
                 Spacer(modifier = Modifier.height(12.dp))
 
                 Text(
-                    text = uiState.profile?.name ?: "Atleta",
+                    text = uiState.profile?.name ?: stringResource(R.string.home_default_name),
                     style = MaterialTheme.typography.headlineSmall,
                     fontWeight = FontWeight.Bold,
                     color = Color.White
                 )
 
                 Text(
-                    text = goalLabel(uiState.profile?.fitnessGoal ?: FitnessGoal.STAY_ACTIVE),
+                    text = when (uiState.profile?.fitnessGoal) {
+                        FitnessGoal.LOSE_WEIGHT -> stringResource(R.string.goal_lose_weight)
+                        FitnessGoal.BUILD_MUSCLE -> stringResource(R.string.goal_build_muscle)
+                        FitnessGoal.IMPROVE_ENDURANCE -> stringResource(R.string.goal_improve_endurance)
+                        FitnessGoal.STAY_ACTIVE -> stringResource(R.string.goal_stay_active)
+                        null -> stringResource(R.string.goal_stay_active)
+                    },
                     style = MaterialTheme.typography.bodyMedium,
-                    color = MaterialTheme.colorScheme.primary
+                    color = MaterialTheme.colorScheme.onPrimary
                 )
             }
 
@@ -125,7 +133,7 @@ fun ProfileScreen(
             ) {
                 Icon(
                     Icons.Default.Edit,
-                    contentDescription = "Editar perfil",
+                    contentDescription = stringResource(R.string.profile_edit_content_desc),
                     tint = Color.White,
                     modifier = Modifier.padding(8.dp)
                 )
@@ -135,7 +143,7 @@ fun ProfileScreen(
         // --- Stats ---
         Column(modifier = Modifier.padding(20.dp)) {
             Text(
-                text = "Estadísticas",
+                text = stringResource(R.string.profile_title),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground
@@ -149,15 +157,15 @@ fun ProfileScreen(
             ) {
                 ProfileStatCard(
                     modifier = Modifier.weight(1f),
-                    emoji = "🏋️",
+                    emoji = stringResource(R.string.profile_stats_sessions_emoji),
                     value = "${uiState.totalSessions}",
-                    label = "Sesiones"
+                    label = stringResource(R.string.profile_stats_sessions_label)
                 )
                 ProfileStatCard(
                     modifier = Modifier.weight(1f),
-                    emoji = "🔥",
+                    emoji = stringResource(R.string.profile_stats_streak_emoji),
                     value = "${uiState.activeStreak}",
-                    label = "Racha (días)"
+                    label = stringResource(R.string.profile_stats_streak_label)
                 )
             }
 
@@ -169,15 +177,15 @@ fun ProfileScreen(
             ) {
                 ProfileStatCard(
                     modifier = Modifier.weight(1f),
-                    emoji = "⏱️",
+                    emoji = stringResource(R.string.profile_stats_minutes_emoji),
                     value = "${uiState.totalMinutes}",
-                    label = "Minutos totales"
+                    label = stringResource(R.string.profile_stats_minutes_label)
                 )
                 ProfileStatCard(
                     modifier = Modifier.weight(1f),
-                    emoji = "⭐",
-                    value = uiState.favoriteRoutineName ?: "-",
-                    label = "Rutina favorita",
+                    emoji = stringResource(R.string.profile_stats_favorite_emoji),
+                    value = uiState.favoriteRoutineName ?: stringResource(R.string.not_defined),
+                    label = stringResource(R.string.profile_stats_favorite_label),
                     smallValue = true
                 )
             }
@@ -186,7 +194,7 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = "Mi perfil",
+                text = stringResource(R.string.profile_info_level_label),
                 style = MaterialTheme.typography.titleMedium,
                 fontWeight = FontWeight.Bold,
                 color = MaterialTheme.colorScheme.onBackground
@@ -195,20 +203,31 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(12.dp))
 
             ProfileInfoRow(
-                label = "Nivel",
-                value = experienceLabel(uiState.profile?.experienceLevel ?: DifficultyLevel.BEGINNER)
+                label = stringResource(R.string.profile_info_level_label),
+                value = when (uiState.profile?.experienceLevel) {
+                    DifficultyLevel.BEGINNER -> stringResource(R.string.difficulty_beginner)
+                    DifficultyLevel.INTERMEDIATE -> stringResource(R.string.difficulty_intermediate)
+                    DifficultyLevel.ADVANCED -> stringResource(R.string.difficulty_advanced)
+                    null -> stringResource(R.string.difficulty_beginner)
+                }
             )
             ProfileInfoRow(
-                label = "Peso",
-                value = uiState.profile?.weight?.let { "${it} kg" } ?: "No definido"
+                label = stringResource(R.string.profile_info_weight_label),
+                value = uiState.profile?.weight?.let { stringResource(R.string.profile_weight_format, it) } ?: stringResource(R.string.not_defined)
             )
             ProfileInfoRow(
-                label = "Estatura",
-                value = uiState.profile?.height?.let { "${it} cm" } ?: "No definido"
+                label = stringResource(R.string.profile_info_height_label),
+                value = uiState.profile?.height?.let { stringResource(R.string.profile_height_format, it) } ?: stringResource(R.string.not_defined)
             )
             ProfileInfoRow(
-                label = "Objetivo",
-                value = goalLabel(uiState.profile?.fitnessGoal ?: FitnessGoal.STAY_ACTIVE)
+                label = stringResource(R.string.profile_info_goal_label),
+                value = when (uiState.profile?.fitnessGoal) {
+                    FitnessGoal.LOSE_WEIGHT -> stringResource(R.string.goal_lose_weight)
+                    FitnessGoal.BUILD_MUSCLE -> stringResource(R.string.goal_build_muscle)
+                    FitnessGoal.IMPROVE_ENDURANCE -> stringResource(R.string.goal_improve_endurance)
+                    FitnessGoal.STAY_ACTIVE -> stringResource(R.string.goal_stay_active)
+                    null -> stringResource(R.string.goal_stay_active)
+                }
             )
         }
     }
@@ -276,17 +295,4 @@ private fun ProfileInfoRow(label: String, value: String) {
             .height(1.dp)
             .background(MaterialTheme.colorScheme.onBackground.copy(alpha = 0.06f))
     )
-}
-
-fun goalLabel(goal: FitnessGoal) = when (goal) {
-    FitnessGoal.LOSE_WEIGHT -> "Perder peso"
-    FitnessGoal.BUILD_MUSCLE -> "Ganar músculo"
-    FitnessGoal.IMPROVE_ENDURANCE -> "Mejorar resistencia"
-    FitnessGoal.STAY_ACTIVE -> "Mantenerme activo"
-}
-
-fun experienceLabel(level: DifficultyLevel) = when (level) {
-    DifficultyLevel.BEGINNER -> "Principiante"
-    DifficultyLevel.INTERMEDIATE -> "Intermedio"
-    DifficultyLevel.ADVANCED -> "Avanzado"
 }

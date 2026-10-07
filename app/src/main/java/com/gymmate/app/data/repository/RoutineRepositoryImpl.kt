@@ -24,6 +24,9 @@ class RoutineRepositoryImpl @Inject constructor(
             list.map { it.toDomain() }
         }
 
+    override fun getRoutineByIdFlow(id: Long): Flow<Routine?> =
+        routineDao.getRoutineByIdFlow(id).map { it?.toDomain() }
+
     override suspend fun getRoutineById(id: Long): Routine? =
         routineDao.getRoutineById(id)?.toDomain()
 

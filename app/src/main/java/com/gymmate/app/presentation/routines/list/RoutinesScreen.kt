@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -37,10 +38,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavController
+import com.gymmate.app.R
 import com.gymmate.app.domain.model.DifficultyLevel
 import com.gymmate.app.presentation.home.components.WorkoutTypeToggle
 import com.gymmate.app.presentation.routines.list.components.RoutineCard
@@ -70,17 +73,17 @@ fun RoutinesScreen(
                 .padding(horizontal = 20.dp, vertical = 16.dp)
         ) {
             // Título + Toggle + Sort
-            androidx.compose.foundation.layout.Row(
+            Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
-                    text = "Rutinas",
+                    text = stringResource(R.string.routines_title),
                     style = MaterialTheme.typography.headlineMedium,
                     color = MaterialTheme.colorScheme.onBackground
                 )
-                androidx.compose.foundation.layout.Row(
+                Row(
                     horizontalArrangement = Arrangement.spacedBy(8.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -89,7 +92,7 @@ fun RoutinesScreen(
                         IconButton(onClick = { showSortMenu = true }) {
                             Icon(
                                 Icons.Default.Sort,
-                                contentDescription = "Ordenar",
+                                contentDescription = stringResource(R.string.routines_sort_content_desc),
                                 tint = MaterialTheme.colorScheme.onBackground
                             )
                         }
@@ -98,21 +101,21 @@ fun RoutinesScreen(
                             onDismissRequest = { showSortMenu = false }
                         ) {
                             DropdownMenuItem(
-                                text = { Text("Por defecto") },
+                                text = { Text(stringResource(R.string.routines_sort_default)) },
                                 onClick = {
                                     viewModel.setSortOrder(SortOrder.DEFAULT)
                                     showSortMenu = false
                                 }
                             )
                             DropdownMenuItem(
-                                text = { Text("Duración: menor a mayor") },
+                                text = { Text(stringResource(R.string.routines_sort_duration_asc)) },
                                 onClick = {
                                     viewModel.setSortOrder(SortOrder.DURATION_ASC)
                                     showSortMenu = false
                                 }
                             )
                             DropdownMenuItem(
-                                text = { Text("Duración: mayor a menor") },
+                                text = { Text(stringResource(R.string.routines_sort_duration_desc)) },
                                 onClick = {
                                     viewModel.setSortOrder(SortOrder.DURATION_DESC)
                                     showSortMenu = false
@@ -134,9 +137,9 @@ fun RoutinesScreen(
                 value = uiState.searchQuery,
                 onValueChange = { viewModel.onSearchQueryChange(it) },
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Buscar rutina...") },
+                placeholder = { Text(stringResource(R.string.routines_search_hint)) },
                 leadingIcon = {
-                    Icon(Icons.Default.Search, contentDescription = "Buscar")
+                    Icon(Icons.Default.Search, contentDescription = stringResource(R.string.routines_search_content_desc))
                 },
                 trailingIcon = {
                     AnimatedVisibility(
@@ -145,7 +148,7 @@ fun RoutinesScreen(
                         exit = fadeOut()
                     ) {
                         IconButton(onClick = { viewModel.onSearchQueryChange("") }) {
-                            Icon(Icons.Default.Close, contentDescription = "Limpiar")
+                            Icon(Icons.Default.Close, contentDescription = stringResource(R.string.routines_clear_search_content_desc))
                         }
                     }
                 },
@@ -167,22 +170,18 @@ fun RoutinesScreen(
                     FilterChip(
                         selected = uiState.selectedDifficulty == null,
                         onClick = { viewModel.selectDifficulty(null) },
-                        label = { Text("Todos") }
+                        label = { Text(stringResource(R.string.all)) }
                     )
                 }
                 items(DifficultyLevel.entries) { difficulty ->
                     FilterChip(
                         selected = uiState.selectedDifficulty == difficulty,
                         onClick = { viewModel.selectDifficulty(difficulty) },
-                        label = {
-                            Text(
-                                when (difficulty) {
-                                    DifficultyLevel.BEGINNER -> "Principiante"
-                                    DifficultyLevel.INTERMEDIATE -> "Intermedio"
-                                    DifficultyLevel.ADVANCED -> "Avanzado"
-                                }
-                            )
-                        }
+                        label = { Text(when (difficulty) {
+                            DifficultyLevel.BEGINNER -> stringResource(R.string.difficulty_beginner)
+                            DifficultyLevel.INTERMEDIATE -> stringResource(R.string.difficulty_intermediate)
+                            DifficultyLevel.ADVANCED -> stringResource(R.string.difficulty_advanced)
+                        }) }
                     )
                 }
             }
@@ -195,10 +194,10 @@ fun RoutinesScreen(
                 contentAlignment = Alignment.Center
             ) {
                 Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                    Text(text = "😅", style = MaterialTheme.typography.displayMedium)
+                    Text(text = stringResource(R.string.routines_empty_emoji), style = MaterialTheme.typography.displayMedium)
                     Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "No hay rutinas con esos filtros",
+                        text = stringResource(R.string.routines_empty_state),
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onBackground.copy(alpha = 0.6f)
                     )

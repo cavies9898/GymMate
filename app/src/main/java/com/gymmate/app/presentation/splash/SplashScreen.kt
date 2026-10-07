@@ -65,7 +65,7 @@ fun SplashScreen(navController: NavController) {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF0D1B2A)),
+            .background(MaterialTheme.colorScheme.background),
         contentAlignment = Alignment.Center
     ) {
         Column(
@@ -86,7 +86,7 @@ fun SplashScreen(navController: NavController) {
                 text = "GymMate",
                 style = MaterialTheme.typography.headlineLarge,
                 fontWeight = FontWeight.Bold,
-                color = Color(0xFF4FC3F7),
+                color = MaterialTheme.colorScheme.primary,
                 modifier = Modifier.alpha(textAlpha.value)
             )
 

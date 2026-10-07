@@ -3,7 +3,8 @@ package com.gymmate.app.presentation.routines.detail
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.gymmate.app.domain.usecase.routine.GetRoutineByIdUseCase
+import com.gymmate.app.domain.model.Routine
+import com.gymmate.app.domain.usecase.routine.GetRoutineDetailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -13,7 +14,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class RoutineDetailViewModel @Inject constructor(
-    private val getRoutineByIdUseCase: GetRoutineByIdUseCase,
+    private val getRoutineDetailUseCase: GetRoutineDetailUseCase,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
@@ -27,11 +28,13 @@ class RoutineDetailViewModel @Inject constructor(
 
     private fun loadRoutine(routineId: Long) {
         viewModelScope.launch {
-            val routine = getRoutineByIdUseCase(routineId)
-            _uiState.value = RoutineDetailUiState(
-                isLoading = false,
-                routine = routine
-            )
+            getRoutineDetailUseCase(routineId)
+                .collect { routine ->
+                    _uiState.value = RoutineDetailUiState(
+                        isLoading = false,
+                        routine = routine
+                    )
+                }
         }
     }
 }

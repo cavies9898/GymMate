@@ -31,29 +31,24 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.gymmate.app.R
 import com.gymmate.app.presentation.navigation.AppDestinations
+import com.gymmate.app.presentation.theme.getConfettiColors
 import kotlinx.coroutines.delay
 import kotlin.math.cos
 import kotlin.math.sin
 import kotlin.random.Random
 
-// Colores del confetti
-private val confettiColors = listOf(
-    Color(0xFF4FC3F7), Color(0xFFFFD700), Color(0xFFE53935),
-    Color(0xFF4CAF50), Color(0xFFFF9800), Color(0xFFE91E63),
-    Color(0xFF9C27B0), Color(0xFF00BCD4)
-)
-
 private data class ConfettiParticle(
     val x: Float,
     val y: Float,
-    val color: Color,
+    val color: androidx.compose.ui.graphics.Color,
     val radius: Float,
     val angle: Float,
     val speed: Float,
@@ -73,6 +68,9 @@ fun WorkoutSummaryScreen(
     // Animación de entrada
     val alpha = remember { Animatable(0f) }
     val scale = remember { Animatable(0.8f) }
+
+    // Confetti colors from theme
+    val confettiColors = getConfettiColors()
 
     // Confetti
     val particles = remember {
@@ -112,7 +110,7 @@ fun WorkoutSummaryScreen(
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(Color(0xFF0D1B2A))
+            .background(MaterialTheme.colorScheme.background)
     ) {
         // Confetti canvas
         Canvas(modifier = Modifier.fillMaxSize()) {
@@ -140,15 +138,15 @@ fun WorkoutSummaryScreen(
             Spacer(modifier = Modifier.weight(0.5f))
 
             // Trofeo
-            Text(text = "🏆", fontSize = 80.sp)
+            Text(text = stringResource(R.string.summary_trophy_emoji), fontSize = 80.sp)
 
             Spacer(modifier = Modifier.height(16.dp))
 
             Text(
-                text = "¡Rutina completada!",
+                text = stringResource(R.string.summary_congrats),
                 style = MaterialTheme.typography.headlineMedium,
                 fontWeight = FontWeight.Bold,
-                color = Color.White,
+                color = MaterialTheme.colorScheme.onBackground,
                 textAlign = TextAlign.Center
             )
 
@@ -172,13 +170,13 @@ fun WorkoutSummaryScreen(
                     modifier = Modifier.weight(1f),
                     emoji = "⏱️",
                     value = formatDuration(durationSeconds),
-                    label = "Tiempo"
+                    label = stringResource(R.string.summary_time_label)
                 )
                 SummaryStatCard(
                     modifier = Modifier.weight(1f),
                     emoji = "🔥",
                     value = "$estimatedCalories",
-                    label = "Calorías"
+                    label = stringResource(R.string.summary_calories_label)
                 )
             }
 
@@ -192,13 +190,13 @@ fun WorkoutSummaryScreen(
                     modifier = Modifier.weight(1f),
                     emoji = "💪",
                     value = "$setsCompleted",
-                    label = "Series"
+                    label = stringResource(R.string.summary_sets_label)
                 )
                 SummaryStatCard(
                     modifier = Modifier.weight(1f),
                     emoji = "✅",
                     value = "$exercisesCompleted",
-                    label = "Ejercicios"
+                    label = stringResource(R.string.summary_exercises_label)
                 )
             }
 
@@ -218,7 +216,7 @@ fun WorkoutSummaryScreen(
                 )
             ) {
                 Text(
-                    text = "🏠  Volver al inicio",
+                    text = stringResource(R.string.summary_go_home),
                     style = MaterialTheme.typography.titleMedium,
                     fontWeight = FontWeight.Bold,
                     modifier = Modifier.padding(vertical = 4.dp)
@@ -237,7 +235,7 @@ fun WorkoutSummaryScreen(
                 shape = RoundedCornerShape(14.dp)
             ) {
                 Text(
-                    text = "🏋️  Ver otras rutinas",
+                    text = stringResource(R.string.summary_view_routines),
                     style = MaterialTheme.typography.titleMedium,
                     color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(vertical = 4.dp)
@@ -259,7 +257,7 @@ private fun SummaryStatCard(
     Column(
         modifier = modifier
             .clip(RoundedCornerShape(16.dp))
-            .background(Color.White.copy(alpha = 0.07f))
+            .background(MaterialTheme.colorScheme.surface)
             .padding(vertical = 20.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(4.dp)
@@ -269,12 +267,12 @@ private fun SummaryStatCard(
             text = value,
             style = MaterialTheme.typography.headlineSmall,
             fontWeight = FontWeight.Bold,
-            color = Color.White
+            color = MaterialTheme.colorScheme.onSurface
         )
         Text(
             text = label,
             style = MaterialTheme.typography.labelMedium,
-            color = Color.White.copy(alpha = 0.5f)
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
         )
     }
 }
